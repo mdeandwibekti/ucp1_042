@@ -20,7 +20,17 @@ class Product extends Model
         'description',
         'price',
         'stock',
-        'user_id', // Tambahkan user_id ke fillable agar bisa diisi saat create
+        'user_id',
+    ];
+
+    /**
+     * attributes
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'description' => '',
+        'image' => null,
     ];
 
     public function user()
