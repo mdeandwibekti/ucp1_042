@@ -7,15 +7,12 @@
                     {{-- Header --}}
                     <div class="flex items-center justify-between mb-6">
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">Product List</h2>
-                            <p class="text-sm text-gray-400 mt-1">Manage your product inventory</p>
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">Product List
+                            </h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your product inventory</p>
                         </div>
-                        
-                        {{-- Tombol Add Product Hanya untuk Admin --}}
-                        @can('manage-product')
-                        <a href="{{ route('product.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm">
-                            Add Product
-                        </a>
+                        @can('manage-products')
+                            <x-add-product :url="route('product.create')" :name="'Product'"/>
                         @endcan
                     </div>
 

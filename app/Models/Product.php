@@ -15,10 +15,12 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
+        'name',
+        'quantity',
+        'price',
         'image',
         'title',
         'description',
-        'price',
         'stock',
         'user_id', // Tambahkan user_id ke fillable agar bisa diisi saat create
     ];
