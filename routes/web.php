@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
 // 1. Route Publik (Tanpa Login)
 Route::get('/', function () {
@@ -38,6 +39,13 @@ Route::middleware('auth')->group(function () {
 
     // Route show harus setelah middleware routes agar tidak conflict dengan create dan edit
     Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
+
+    Route::middleware('can:manage-category')->group(function () {
+        Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
+        Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create');
+        Route::post('/category', [CategoryController::class, 'store'])->name('category.store');
+        Route::delete('/category/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
+    });
 
 });
 

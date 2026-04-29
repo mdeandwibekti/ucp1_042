@@ -7,17 +7,23 @@
                     {{-- Header --}}
                     <div class="flex items-center justify-between mb-6">
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">Product List
-                            </h2>
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">Product List</h2>
                             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your product inventory</p>
                         </div>
-                        @can('manage-products')
-                            <x-add-product :url="route('product.create')" :name="'Product'"/>
-                        @endcan
+                        <div class="flex gap-2">
+                            {{-- Tombol untuk Pindah ke Halaman Category --}}
+                            <a href="{{ route('category.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-xs font-bold rounded-lg shadow-md transition-all border border-gray-500">
+                                View Categories
+                            </a>
+                            
+                            @can('manage-product')
+                                <x-add-product :url="route('product.create')" :name="'Product'"/>
+                            @endcan
+                        </div>
                     </div>
 
                     {{-- Flash Message --}}
-                    <div class="max-w-md mb-6"> {{-- Ukuran dibatasi agar tidak kepanjangan --}}
+                    <div class="max-w-md mb-6">
                         @if (session('success'))
                             <div class="flex items-center p-4 text-sm rounded-lg border shadow-sm transition-all duration-300 
                                 {{ session('success') == 'Product berhasil dihapus' 
@@ -41,23 +47,11 @@
                                 <tr>
                                     <th class="px-6 py-4">#</th>
                                     <th class="px-6 py-4">Product Name</th>
+                                    <th class="px-6 py-4">Category</th> {{-- Kolom Kategori Baru --}}
                                     <th class="px-6 py-4">Stock Status</th>
                                     <th class="px-6 py-4">Price (IDR)</th>
                                     <th class="px-6 py-4">Created By</th>
-                                    
-                                    {{-- Kolom Action dengan Tombol Add Product --}}
-                                    <th class="px-6 py-3 text-center">
-                                        @can('manage-product')
-                                            <a href="{{ route('product.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-md transition-all duration-200 active:scale-95 border border-indigo-500">
-                                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                                </svg>
-                                                Add Product
-                                            </a>
-                                        @else
-                                            <span class="tracking-widest">Actions</span>
-                                        @endcan
-                                    </th>
+                                    <th class="px-6 py-3 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -67,6 +61,14 @@
                                         <td class="px-6 py-4 font-bold text-gray-900 dark:text-white text-base">
                                             {{ $product->title }}
                                         </td>
+                                        
+                                        {{-- Data Kategori --}}
+                                        <td class="px-6 py-4">
+                                            <span class="px-2 py-1 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded text-xs font-medium border border-blue-100 dark:border-blue-800">
+                                                {{ $product->category->name ?? 'Uncategorized' }}
+                                            </span>
+                                        </td>
+
                                         <td class="px-6 py-4">
                                             @if($product->stock > 10)
                                                 <span class="px-3 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full text-xs font-black uppercase">
@@ -85,25 +87,24 @@
                                             {{ $product->user->name ?? 'Unknown' }}
                                         </td>
                                         
-                                        {{-- Update di bagian Action Column ini --}}
+                                        {{-- Action Column --}}
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center justify-center gap-2">
                                                 
-                                                {{-- Tombol View tetap dipertahankan --}}
+                                                {{-- Tombol View --}}
                                                 <a href="{{ route('product.show', $product->id) }}" class="font-bold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">View</a>
                                                 
                                                 @can('manage-product')
-                                                    {{-- Pemanggilan Component Edit dan Delete --}}
+                                                    {{-- Component Edit & Delete --}}
                                                     <x-edit-button :url="route('product.edit', $product->id)" />
                                                     <x-delete-button :action="route('product.delete', $product->id)" />
                                                 @endcan
                                             </div>
                                         </td>
-
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-20 text-center text-gray-500 dark:text-gray-400 italic">
+                                        <td colspan="7" class="px-6 py-20 text-center text-gray-500 dark:text-gray-400 italic">
                                             Inventory is empty.
                                         </td>
                                     </tr>

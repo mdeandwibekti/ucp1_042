@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;
@@ -17,7 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('user')
+        $products = Product::with('user', 'category')
                             ->latest()
                             ->paginate(10);
 
@@ -32,8 +33,9 @@ class ProductController extends Controller
         $users = User::select('id', 'name')
                      ->orderBy('name')
                      ->get();
-
-        return view('product.create', compact('users'));
+                    
+        $categories = Category::all();
+        return view('product.create', compact('users', 'categories'));
     }
 
     /**
@@ -89,8 +91,10 @@ class ProductController extends Controller
         $users = User::select('id', 'name')
                      ->orderBy('name')
                      ->get();
+        
+        $categories = Category::all();
 
-        return view('product.edit', compact('product', 'users'));
+        return view('product.edit', compact('product', 'users', 'categories'));
     }
 
     /**
@@ -104,6 +108,7 @@ class ProductController extends Controller
         // Validasi disesuaikan dengan kolom database (title dan stock)
         $validated = $request->validate([
             'title'    => 'sometimes|string|max:255',
+            'category_id' => 'required|exists:categories,id',
             'stock'    => 'sometimes|integer',
             'price'    => 'sometimes|numeric',
             'user_id'  => 'sometimes|exists:users,id',

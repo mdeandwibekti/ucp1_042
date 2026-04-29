@@ -17,7 +17,8 @@ class StoreProductRequest extends FormRequest
             'title'    => 'required|string|max:255',
             'stock'    => 'required|integer',
             'price'    => 'required|numeric',
-            'user_id'  => 'required|exists:users,id', // Validasi dropdown owner
+            'user_id'  => 'required|exists:users,id', 
+            'category_id' => 'required|exists:categories,id',
         ];
     }
 
